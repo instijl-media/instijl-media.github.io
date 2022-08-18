@@ -4,7 +4,7 @@ License: InStijl Media
 License URI: http://www.instijlmedia.nl
 Platform: Lightspeed
 =============================================================== */
-var ism_products_connector = {
+export const ism_products_connector = {
     dataTarget: '[data-ism-connector-target]',  // HTML Location
     sizeThumbs: '85x85x2',
     sizeImages: '233x233x2',
@@ -98,17 +98,12 @@ var ism_products_connector = {
         });
     },
   }
-  
+
+
   /* ISM JS Toolset
   =============================================================== */
-  function pad(number, length){
+ function pad(number, length){
     var str = '' + number;
     while (str.length < length) {str = '0' + str;}
-      return str;
+    return str;
   }
-  
-  /* ISM Activate Function
-  =============================================================== */
-  $(document).ready(function() {
-      ism_products_connector.init('[data-ism-connector-target]','85x85x2','233x233x2');
-  });
