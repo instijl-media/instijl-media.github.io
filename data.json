@@ -5,7 +5,7 @@
   "key": "56917d58-b0dc-4076-ab05-8e077efbcb59",
   "plugins": [
     {
-      "product_connector":"https://instijl-media.github.io/product-connector/main.js"
+      "ism_products_connector":"https://instijl-media.github.io/product-connector/main.js"
     }
   ]
 }
