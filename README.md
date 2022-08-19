@@ -7,11 +7,11 @@
   "url": "_url of webshop_",<br />
   "key": "_generate an api key (https://codepen.io/corenominal/pen/rxOmMJ)_",<br />
   "plugins": [<br />
-  _Loop all plugins here._<br />
-    {<br />
-      "title":"_title of plugin. Example: ism_products_connector_",<br />
-      "src":"_Link of file. Example: https://instijl-media.github.io/product-connector/main.js_"<br />
-    }<br />
+  _&nbsp;&nbsp;Loop all plugins here._<br />
+    &nbsp;&nbsp;{<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;"title":"_title of plugin. Example: ism_products_connector_",<br />
+      &nbsp;&nbsp;&nbsp;&nbsp;"src":"_Link of file. Example: https://instijl-media.github.io/product-connector/main.js_"<br />
+    &nbsp;&nbsp;}<br />
   ]<br />
 }<br />
 
