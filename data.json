@@ -2,7 +2,7 @@
   "id": "0",
   "shopid": "278738",
   "url": "https://test-instijl8.webshopapp.com",
-  "key": "56917d58-b0dc-4076-ab05-8e077efbcb59",
+  "key": "56917d58-b0dc-4076-ab05-8e077efbcb59", // generate an api key (https://codepen.io/corenominal/pen/rxOmMJ)
   "plugins": [
     {
       "title":"ism_products_connector",
