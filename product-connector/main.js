@@ -107,3 +107,7 @@ const ism_products_connector = {
     while (str.length < length) {str = '0' + str;}
     return str;
   }
+
+$(document).ready(function() {
+    ism_products_connector.init('[data-ism-connector-target]','85x85x2','233x233x2');
+});
