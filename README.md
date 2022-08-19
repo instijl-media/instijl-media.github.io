@@ -1,6 +1,6 @@
 # instijl-media.github.io
 
-**data.json**
+**data.json**<br />
 {
   "id": "_give this user license an unique ID_",
   "shopid": "_Webshop ID_",
@@ -15,7 +15,7 @@
   ]
 }
 
-**app.json**
+**app.json**<br />
 Add this file to your assets in your webshop.
 When you have added the app.js file to your assets, you go to the <head> of your webshop and added the script below.
 _<script src="{{ 'app.js' | url_asset }}?id={{ shop.id }}&secret=_YOUR GENERATED API KEY_" type="module" id="ism_app"></script>_
