@@ -2,17 +2,17 @@
 
 **data.json**<br />
 {<br />
-  "id": "_give this user license an unique ID_",<br />
-  "shopid": "_Webshop ID_",<br />
-  "url": "_url of webshop_",<br />
-  "key": "_generate an api key (https://codepen.io/corenominal/pen/rxOmMJ)_",<br />
-  "plugins": [<br />
+  &nbsp;"id": "_give this user license an unique ID_",<br />
+  &nbsp;"shopid": "_Webshop ID_",<br />
+  &nbsp;"url": "_url of webshop_",<br />
+  &nbsp;"key": "_generate an api key (https://codepen.io/corenominal/pen/rxOmMJ)_",<br />
+  &nbsp;"plugins": [<br />
   _&nbsp;&nbsp;Loop all plugins here._<br />
     &nbsp;&nbsp;{<br />
       &nbsp;&nbsp;&nbsp;&nbsp;"title":"_title of plugin. Example: ism_products_connector_",<br />
       &nbsp;&nbsp;&nbsp;&nbsp;"src":"_Link of file. Example: https://instijl-media.github.io/product-connector/main.js_"<br />
     &nbsp;&nbsp;}<br />
-  ]<br />
+  &nbsp;]<br />
 }<br />
 
 **app.json**<br />
