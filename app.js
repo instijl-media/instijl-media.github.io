@@ -1,3 +1,4 @@
+// Copy this script into the shop
 $(document).ready(function() {
   // Variables
   var shopId = getUrlParam('id');
@@ -16,14 +17,16 @@ $(document).ready(function() {
     const scriptTag = document.createElement("script");
     scriptTag.src = filePath;
     document.body.appendChild(scriptTag);
-	}
-
+  }
+  
+  // Validation data.json
   $.getJSON(dataJsonUrl, function(data) {
     console.log(shopId+'=='+data['id']);
     if(shopId == data['shopid']){
     	console.log('ID confirmed');
       if(secret == data['key']){
       	var ismAccess = true;
+	// Load plugins
         $.each(data['plugins'], function(key, plugin) {
           include(plugin['src']);
         });
