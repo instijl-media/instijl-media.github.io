@@ -1,19 +1,19 @@
 # instijl-media.github.io
 
 **data.json**<br />
-{
-  "id": "_give this user license an unique ID_",
-  "shopid": "_Webshop ID_",
-  "url": "_url of webshop_",
-  "key": "_generate an api key (https://codepen.io/corenominal/pen/rxOmMJ)_",
-  "plugins": [
-  _Loop all plugins here._
-    {
-      "title":"_title of plugin. Example: ism_products_connector_",
-      "src":"_Link of file. Example: https://instijl-media.github.io/product-connector/main.js_"
-    }
-  ]
-}
+{<br />
+  "id": "_give this user license an unique ID_",<br />
+  "shopid": "_Webshop ID_",<br />
+  "url": "_url of webshop_",<br />
+  "key": "_generate an api key (https://codepen.io/corenominal/pen/rxOmMJ)_",<br />
+  "plugins": [<br />
+  _Loop all plugins here._<br />
+    {<br />
+      "title":"_title of plugin. Example: ism_products_connector_",<br />
+      "src":"_Link of file. Example: https://instijl-media.github.io/product-connector/main.js_"<br />
+    }<br />
+  ]<br />
+}<br />
 
 **app.json**<br />
 Add this file to your assets in your webshop.
