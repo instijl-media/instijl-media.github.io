@@ -1,0 +1,34 @@
+{#
+   Place this code in your webshop where you want to display your search bar.
+#}
+<div id="search" class="w-100">
+  <form action="{{ 'search' | url }}" method="get" id="formSearch" class="d-flex align-items-center">
+    <a href="javascript:;" title="close" onclick="closeEverything();return false;" class="menu-close icon icon-shape"><i class="far fa-close"></i></a>
+    <div class="form-group flex-fill mb-0">
+      <div class="input-group border-0 overflow-hidden">
+        <div class="input-group-text border-0 rounded-0"><i class="far fa-search text-dark"></i></div>
+        <input class="form-control form-control-alternative form-icon border-0" value="{{ page.search }}" placeholder="{{ 'Search' | t }}" type="{{ input.type }}" name="q" autocomplete="off">
+      </div>
+    </div>
+  </form>
+  <div class="autocomplete">
+    <div class="results shadow">
+      <div class="container">
+        <div class="row py-3">
+          <div class="col-lg-4 col-12{% if search.navbar.position == 'down' %} order-lg-1{% else %} order-lg-2{% endif %} order-1">
+            <div class="search-box">
+              <div class="title-box h4 mb-3">{{ 'I am looking for' | t }}</div>
+              <ul class="list-unstyled ism-results-list"></ul>
+            </div>
+          </div>
+          <div class="col-lg-8 col-12 {% if search.navbar.position == 'down' %} order-lg-2{% else %} order-lg-1{% endif %} order-2">
+            <div class="title-box h4 mb-3">{{ "Search results for '$1'" | t('<b class="query">...</b>') | t  | raw }}</div>
+            <div class="products products-box products-livesearch clear"></div>
+            <div class="notfound">{{ 'No products found' | t }}...</div>
+            <a class="btn btn-secondary item-add-btn more clear" href="{{ search.url }}">{{ 'View all results' | t }}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
