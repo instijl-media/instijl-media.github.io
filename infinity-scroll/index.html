@@ -1,0 +1,42 @@
+{# Prepare the filter get variables (makes it work with filters) #}
+{% set filter_get_variables = "" %}
+{% if request.get != false %}{% set filter_get_variables = "&" %}{% endif %}
+{% for filter in collection.filters.custom %}
+	{% for value in filter.values %}
+		{% if value.active %}
+			{% if (loop.first and request.get != false) or not loop.first %}{% set filter_get_variables = filter_get_variables ~ "&" %}{% endif %}
+			{% set filter_get_variables = filter_get_variables ~ "filter%5B%5D=" ~ value.id %}
+		{% endif %}
+	{% endfor %}
+{% endfor %}
+{% set scroll_instijl = {
+  "baseUrl" : collection.internal.url | url,
+  "extendUrl" : "?" ~ request.get | url_encode,
+  "startPage" : collection.page,
+  "page" : collection.page,
+  "pages" : collection.pages,
+  "isLoading" : false,
+} %}
+<div class="products {{ collection.mode }}" data-scroll-in-stijl='{{ scroll_instijl | json_encode | raw }}'></div>
+    <div class="collection-products" data-scroll-in-stijl-page='{{ request.url }}'>
+        {% for product in collection.products %}
+            {% include 'snippets/products-grid.rain' %}
+        {% endfor %}
+    </div>
+</div>
+
+{# Prev button #}
+{% if theme.pagination == "infinity" and collection.page_prev %}
+{% set pagination = collection | paginate %}
+    <div class="text-center mt-3 mb-3">
+        <a class="scroll-instijl-previous-page btn btn-secondary {{ theme.button_style }} {{ theme.button_radius }}" href="{{ pagination.previous.url | url }}">{{ 'Load more products' | t }}</a>
+    </div>
+{% endif %}
+
+{# Next button #}
+{% if theme.pagination == "infinity" and collection.page_next %}
+    {% set pagination = collection | paginate %}
+    <div class="text-center mt-3 mb-3">
+    <a class="scroll-instijl-next-page btn btn-secondary btn-darken" href="javascript:void(0);">{{ 'Load next products' | t }}</a>
+    </div>
+{% endif %}
