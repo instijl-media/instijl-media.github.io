@@ -1,0 +1,6 @@
+/* Search */
+#header #formSearch input {background:transparent;font-size:12px;font-style:italic;padding-left:30px;}
+#header .autocomplete {opacity:0;visibility:hidden;background: #fff;border: 1px solid #ddd;margin-top:10px;position: absolute;left:0px;right:0px;z-index:14;}
+#header .autocomplete.search {opacity:1;visibility:visible;}
+#header .autocomplete:before {background:#FFF;border-left: 1px solid #CCC;border-top: 1px solid #CCC;content: "";display: block;height: 10px;position: absolute;right: 20px;top: -6px;-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);-ms-transform: rotate(45deg);-o-transform: rotate(45deg);transform: rotate(45deg);width: 10px;}
+#header .autocomplete .info {font-size:14px;padding-left:10px;}
