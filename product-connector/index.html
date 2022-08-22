@@ -1,0 +1,16 @@
+<div class="block-box">
+  <div class="title-box h5 mb-3">
+    <strong>{{ 'Verschillende varianten' | t }}</strong>
+  </div>
+  <div class="content-box">
+    {% if product.sku %}{% set key = product.sku %}{% elseif product.ean %}{% set key = product.ean %}{% else %}{% set key = false %}{% endif %}
+    {% if key %}
+    <div id="ism_products_connector" data-vid="{{ product.vid }}" data-connector="{{ ('search/'~key) | url }}" data-limit="5" data-carousel="true" data-ism-connector-target>
+      <div class="spinner-border" role="status">
+        <span class="sr-only">{{ 'Loading...' | t }}</span>
+      </div>
+      <span>{{ 'Loading...' | t }}</span>
+    </div>
+    {% endif %}
+  </div>
+</div>
