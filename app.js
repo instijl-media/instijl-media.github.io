@@ -16,6 +16,8 @@ $(document).ready(function() {
   function include(filePath) {
     const scriptTag = document.createElement("script");
     scriptTag.src = filePath;
+    scriptTag.setAttribute('type', 'text/javascript');
+    scriptTag.setAttribute('defer', true);
     document.body.appendChild(scriptTag);
   }
   
