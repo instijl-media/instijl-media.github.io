@@ -31,7 +31,8 @@ const ism_products_connector = {
               static: json.shop.domains.static,
               b2b: json.shop.b2b,
               curSymbol: json.shop.currency2.symbol,
-              curCode: json.shop.currency2.code
+              curCode: json.shop.currency2.code,
+              lang : json.shop.language
             };
             /* ISM Output Template
             =============================================================== */
@@ -47,7 +48,7 @@ const ism_products_connector = {
                 //var resultPrice = ismProductPrice(product.price.price_old, product.price.price, product.price.price_old, product.price.price);
                 if(dataCarousel == true){if(count >= limit){var extClass = '';} else {var extClass = 'col-lg-2 col-md-4 col-6';}} else {var extClass = '';}
                 if(activeVid == product.vid){var activeClass = 'active';} else {var activeClass = '';};
-                var resultHTML = '<div class="item item-'+count+' mb-2 '+extClass+' '+ activeClass+'"><a href="'+ism_connector.settings.domain+product.url+'" title="'+product.fulltitle+'" class="text-body" data-price="'+symbol+parseFloat(product.price.price).toFixed(2)+'" data-price_old="'+symbol+parseFloat(product.price.price_old).toFixed(2)+'">'+resultImage+'</a></div>';
+                var resultHTML = '<div class="item item-'+count+' mb-2 '+extClass+' '+ activeClass+'"><a href="'+ism_connector.settings.domain+ism_connector.settings.lang+'/'+product.url+'" title="'+product.fulltitle+'" class="text-body" data-price="'+symbol+parseFloat(product.price.price).toFixed(2)+'" data-price_old="'+symbol+parseFloat(product.price.price_old).toFixed(2)+'">'+resultImage+'</a></div>';
                 resultsHTML.push(resultHTML);
               });
               resultsHTML = resultsHTML.join('');
