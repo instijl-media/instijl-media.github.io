@@ -1,6 +1,22 @@
 # instijl-media.github.io
+```json
+data.json{
+    "id": "_give this user license an unique ID_",
+    "shopid": "_Webshop ID_",
+    "url": "_url of webshop_",
+    "key": "_generate an api key (https://codepen.io/corenominal/pen/rxOmMJ)_",
+    "plugins": [
+        {
+        "title":"title of plugin. Example: ism_products_connector",
+        "src":"Link of file. Example: https://instijl-media.github.io/product-connector/main.js"
+        }
+      ]
+    ]
+}
 
-**data.json**<br />
+```` 
+
+<!-- **data.json**<br />
 {<br />
   &nbsp;"id": "_give this user license an unique ID_",<br />
   &nbsp;"shopid": "_Webshop ID_",<br />
@@ -13,12 +29,12 @@
       &nbsp;&nbsp;&nbsp;&nbsp;"src":"_Link of file. Example: https://instijl-media.github.io/product-connector/main.js_"<br />
     &nbsp;&nbsp;}<br />
   &nbsp;]<br />
-}<br />
+}<br /> -->
 
-**app.json**<br />
+ **app.json**<br />
 Add this file to your assets in your webshop.
 When you have added the app.js file to your assets, you go to the <head> of your webshop and added the script below.<br/>
-_<script src="{{ 'app.js' | url_asset }}?id={{ shop.id }}&secret=_YOUR GENERATED API KEY_" type="module" id="ism_app"></script>_
+_<script src="{{ 'app.js' | url_asset }}?id={{ shop.id }}&secret=_YOUR GENERATED API KEY_" type="module" id="ism_app"></script>_ 
 
 If you have still the template editor deactivated, your can add the script below.<br />
-_<script src="https://instijl-media.github.io/app.js?id={{ shop.id }}&secret=_YOUR GENERATED API KEY_" type="module" id="ism_app"></script>_
+_<script src="https://instijl-media.github.io/app.js?id={{ shop.id }}&secret=_YOUR GENERATED API KEY_" type="module" id="ism_app"></script>_ 
