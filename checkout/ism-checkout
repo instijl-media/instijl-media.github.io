@@ -1,0 +1,25 @@
+{#
+	DEVMODE
+	NOG NIET OPERATIONEEL
+	<link rel="stylesheet" href="{{ 'sm-checkout.css' | url_asset }}?{{ now | date('U') }}" />
+	<link rel="stylesheet" href="{{ 'smc-icons.css' | url_asset }}" />
+#}
+<script src="{{ 'sm-checkout.js' | url_asset }}?{{ now | date('U') }}"></script>
+
+{% set smc_settings = {
+	'addressAutoFill': false,
+	'showCurrency': false,
+	'showMethodPage': true
+} %}
+
+<div class="smc-spacer"></div>
+<div class="sm-checkout">
+  {% include 'snippets/sm-checkout-statusbar.rain' %}
+	{% include ('snippets/sm-checkout-'~ step ~'.rain') with smc_settings %}
+</div>
+
+<script>
+	var smcTranslations = {{ 'Invalid customer email;Free'  | t_json | raw }};
+  var smBasicUrl = '{{ '' | url }}';
+  var smShopCurrency = '{{ shop.currency2.symbol }}';
+</script>

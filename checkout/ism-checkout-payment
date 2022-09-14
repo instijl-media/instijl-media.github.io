@@ -1,0 +1,69 @@
+{% import 'snippets/sm-checkout-macros.rain' as sm %}
+{{ sm.messages(page) }}
+
+{{ sm.page_title(('Payment method' | t), false, 'bx bxs-wallet') }}
+
+<div class="smc-flex smc-align-start smc-xs-flex-wrap">
+  <div class="smc-flex-grow smc-xs-order-2">
+    <form id="gui-form" action="{{ 'checkout/default/payment' | url }}" method="post">
+      <div class="smc-radios-big">
+      {% set methodCount = 0 %}
+      {% for provider in checkout.payment_methods.data %}
+        {% for payment in provider.methods %}
+        {% set methodCount = methodCount + 1 %}
+        <div class="smc-radio-big">
+          <input id="gui-payment-{{ provider.id }}-{{ payment.id }}" type="radio" name="payment_method" data-provider="{{ provider.id }}" data-method="{{ payment.id }}" value="{{ provider.id ? provider.id : payment.id }}|{{ payment.id }}" {{ checkout.payment_method.method == payment.id or (methodCount == 1 and not checkout.payment_method.method)  ? 'checked' : '' }}>
+          <label for="gui-payment-{{ provider.id }}-{{ payment.id }}">
+            <div class="smc-radio-label-wrap">
+              <span class="fake-radio"></span>
+              <div class="smc-radio-info">
+                <div class="smc-flex-between">
+                  <div class="smc-radio-title">
+                    <img src="{{ ('smc-p-'~payment.id~'.svg') | url_asset }}">
+                    {{ payment.title }}
+                    {% if (payment.title | lower) == 'ideal' %}
+                    <div class="smc-label">{{ 'Most chosen' | t }}</div>
+                    {% endif %}
+                  </div>
+                  <div class="smc-radio-price {{ payment.price_incl > 0 ? '' : 'free' }}">
+                    {% if smc_settings.showCurrency %}
+                    	{{ payment.price_incl > 0 ? (payment.price_incl | money) : ('Free' | t) }}
+                    {% else %}
+                    	{{ payment.price_incl > 0 ? '+'~(payment.price_incl | money_without_currency) : ('Free' | t) }}
+                    {% endif %}
+                  </div>
+                </div>
+                {% if payment.description %}
+                <div class="smc-radio-description">{{ payment.description }}</div>
+                {% endif %}
+                {% if payment.form %}
+                <div class="smc-radio-content">
+                  {{ payment.form | raw }}
+                  
+                </div>
+                {% endif %}
+                  <div class="smc-radio-continue">
+                  	<a class="smc-btn" href="javascript:;" onclick="$(this).closest('form').submit()">{{ 'Continue' | t }}</a>
+                  </div>
+                </div>
+              </div>
+          </label>
+        </div>
+        {% endfor %}
+      {% endfor %}
+      </div>
+
+      <div class="smc-spacer"></div>
+
+      <div class="smc-flex smc-align-center smc-flex-end">
+        <a class="smc-text-link icon-right smc-mr-small" href="{{ 'checkout/default/shipment' | url }}"><i class='bx bx-chevron-left'></i>{{ 'Previous step' | t() }}</a>
+        <a class="smc-btn" href="javascript:;" onclick="$(this).closest('form').submit()">
+          <span class="smc-xs-hidden">{{ 'Continue to $1' | t(('Confirmation' | t | lower)) }}</span>
+          <span class="smc-xs-visible">{{ 'Continue' | t }}</span>
+        </a>
+      </div>
+
+    </form>
+  </div>
+  {% include 'snippets/sm-checkout-products.rain' %}
+</div>

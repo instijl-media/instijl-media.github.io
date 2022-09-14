@@ -1,0 +1,47 @@
+{% import 'snippets/sm-checkout-macros.rain' as sm %}
+
+{% if not smc_settings.showMethodPage %}
+	<meta http-equiv="refresh" content="0; URL={{ 'checkout/default/details' | url }}" />
+{% else %}
+
+  {{ sm.page_title(('Checkout' | t), false) }}
+  {{ sm.messages(page) }}
+
+  <div class="smc-row ">
+
+    <div class="smc-col-50 smc-xs-col-100 smc-xs-order-2">
+      <form id="gui-form-login" action="{{ 'account/loginPost/?return=checkout' | url }}" method="post" >
+        <input type="hidden" name="key" value="{{ page.key }}">
+
+        {{ sm.small_title(('Registered customers' | t), ('If you have an account with us, please log in.' | t)) }}
+        <div class="smc-inputs smc-wrap">
+          {{ sm.input_group(page, shop, 'E-mail', 'email', '', 'required', 'smc-wrap') }}
+          {{ sm.input_group(page, shop, 'Password', 'password', '', 'required', 'smc-wrap') }}
+          <div class="smc-input text-right smc-wrap">
+            <a class="smc-text-link" href="{{ 'account/password' | url }}">{{ 'Forgot your password?' | t }}</a>
+          </div>
+          <div class="smc-btn-row">
+            <div class="smc-input">
+              <a class="smc-btn" href="javascript:;" onclick="$(this).closest('form').submit();">{{ 'Login' | t }}</a>
+            </div>
+            <div class="smc-input">
+              <a class="smc-btn" href="{{ 'account/register' | url }}">{{ 'Create account' | t }}</a>
+            </div>
+          </div>
+          
+        </div>
+
+      </form>
+    </div>
+    <div class="smc-col-50 smc-xs-col-100 smc-xs-order-1">
+
+      <div class="smc-block-padding-small smc-bg-gray">
+        {{ sm.small_title(('Checkout as guest' | t), ("It's also possible to checkout without having an account." | t)) }}
+        <a class="smc-btn smc-fw" href="{{ 'checkout/default/details' | url }}">{{ 'Continue as guest' | t }}</a>
+      </div>
+
+    </div>
+
+  </div>
+
+{% endif %}

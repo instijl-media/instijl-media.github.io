@@ -1,0 +1,145 @@
+{% import 'snippets/sm-checkout-macros.rain' as sm %}
+
+<div class="smc-xs-order-1">
+  
+  {#{% if request.device.mobile and step != 'review' %}
+  <a class="smc-text-link icon-right " style="margin-bottom:10px;" data-smc-show-products>{{ 'View shopping cart' | t }}<i class="bx bx-chevron-right"></i></a>
+  {% endif %}#}
+  
+  <div class="smc-review-products-block smc-block-padding-small smc-border {% if request.device.mobile and step != 'review' %}smc-hidden{% endif %}" data-smc-products-wrap>
+    
+    <div class="smc-title-wrap">
+      {{ sm.small_title(('Cart' | t), false) }}
+      <a href="javascript:;" class="smc-close-slide-btn" data-close-review-slide><i class="fa fa-times"></i></a>
+    </div>
+    
+  <table class="smc-products-table">
+    {% for product in checkout.quote.products %}
+    <tr>
+      <td><img src="{{ product.image_id | url_image('100x100x2') }}"></td>
+      <td>
+        <div class="smc-info">
+          <div class="smc-title"><span>{{ product.quantity }}x</span> {{ product.title }}</div>
+          {#<div class="smc-subtitle">{{ product.variant }}{{ product.article_code ? (' ('~ product.article_code ~')') : '' }}</div>#}
+          <div class="smc-subtitle">
+            {{ product.variant }}
+            {#<div>{{ product.stock_message ? product.stock_message : '' }}</div>#}
+          </div>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  
+  <div style="margin-top:20px;"><a class="smc-text-link smc-text-link-under icon-right" href="{{ 'cart' | url }}"><span>{{ 'Change $1' | t('Cart'|t|lower) }}</span><i class='bx bx-chevron-right'></i></a></div>
+    
+  <table class="smc-totals-table">
+    
+    
+    <tr>
+      <td>{{ 'Shipping costs' | t }}</td>
+      <td>
+        <div class="{{ checkout.shipment_method.price_incl > 0 ? '' : 'free' }}"  data-live-shipping-costs>
+          {% if checkout.shipment_method.price_incl %}
+          {% if smc_settings.showCurrency %}
+            {{ checkout.shipment_method.price_incl > 0 ? (checkout.shipment_method.price_incl | money) : ('Free' | t) }}
+          {% else %}
+            {{ checkout.shipment_method.price_incl > 0 ? (checkout.shipment_method.price_incl | money_without_currency) : ('Free' | t) }}
+          {% endif %}
+          {% endif %}
+      	</div>
+      </td>
+    </tr>
+    
+    {#{% if checkout.quote.totals.grand_total < theme.verzendkosten and not checkout.shipment_method  %}
+    <tr class="temp-delivery">
+      <td>{{ 'Shipping costs' | t }}</td>
+      <td>
+        <div>
+          {% if smc_settings.showCurrency %}
+            {{ 4.95 | money }}
+          {% else %}
+            {{ 4.95 | money_without_currency }}
+          {% endif %}
+      	</div>
+      </td>
+    </tr>
+    {% endif %}#}
+    
+    {% if checkout.payment_method.price_incl > 0 %}
+    <tr>
+      <td>{{ 'Payment costs' | t }}</td>
+      <td>
+        {% if smc_settings.showCurrency %}
+        	{{ checkout.payment_method.price_incl | money }}
+        {% else %}
+        	{{ checkout.payment_method.price_incl | money_without_currency }}
+        {% endif %}
+      </td>
+    </tr>
+    {% endif %}
+    
+    
+    
+    {% if checkout.discount %}
+    <tr>
+      <td>{{ 'Discount' | t }} {% if checkout.discount.code %}<span class="smc-small">({{ checkout.discount.code }})</span>{% endif %}</td>
+      <td>
+        {% if smc_settings.showCurrency %}
+        	-{{ checkout.discount.price_incl | money }}
+        {% else %}
+        	-{{ checkout.discount.price_incl | money_without_currency }}
+        {% endif %}
+      </td>
+    </tr>
+		{% endif %}
+    
+    <tr>
+      <td>
+        <div>{{ 'Total' | t }}</div>
+        <div class="smc-small">{{ 'Incl. VAT' | t }}</div>
+      </td>
+      <td>
+        {% if smc_settings.showCurrency %}
+        	{{ checkout.quote.totals.grand_total | money }}
+        {% else %}
+        	{{ checkout.quote.totals.grand_total | money_without_currency }}
+        {% endif %}
+      </td>
+    </tr>
+  </table>
+
+    <div class="smc-text-right">
+      {% if step != 'review' %}
+      <a class="smc-btn" href="javascript:;" onclick="$('.sm-checkout form:not(#gui-form-login)').submit()">
+        {{ 'Continue' | t }}
+      </a>
+      {% else %}
+      <a class="smc-btn hidden-xs" href="javascript:;" onclick="$('.sm-checkout form:not(#gui-form-login)').submit();">{{ 'Betaal met $1' | t(checkout.payment_method.title | split('-')[1] | trim) }}</a>
+      {% endif %}
+
+    </div>
+    
+    
+    
+  	<div class="smc-disocount-code-outer"><a class="smc-text-link icon-left" href="javascript:;" data-smc-show-discount><i class='bx bx-purchase-tag-alt'></i>{{ 'Discount code' | t }}?</a></div>
+    <div class="smc-hidden" style="margin-top:10px;" data-smc-discount-wrap>
+      <div class="smc-block-padding-small smc-bg-gray smc-discount-code-block">
+        <div class="smc-form-div" data-action="{{ 'cart/setDiscount' | url }}" data-next="{{ request.url }}">
+          <div class="smc-inputs smc-flex smc-align-end">
+            {{ sm.input_group(page, shop, 'Discount code', 'code', '', 'required', 'smc-wrap') }}
+            <div class="smc-input no-flex">
+              <a class="smc-btn smc-btn-square" href="javascript:;" data-smc-submit-discount><i class="bx bx-plus"></i></a>
+            </div>
+          </div>
+          <div class="warning-text">{{ "Vul hier je kortingscode in! Heb je een giftcard? Vul deze hier niet in maar kies als betaalmethode: cadeaubon." | t }}</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="close-button-bottom hidden-sm hidden-md hidden-lg">
+      <a href="javascript:;" data-smc-show-productsslide class="close-mobile-popup btn">{{ 'Ga terug' | t }}</a>
+    </div>
+    
+  </div>
+</div>

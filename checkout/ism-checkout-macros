@@ -1,0 +1,239 @@
+{% macro money(price, request) %}{% if request.get.dev %}{{ price | money_without_currency }}{% else %}{{ price | money }}{% endif %}{% endmacro money %}
+
+{% macro input_group(page, shop, label, name, value, type, class, cur_phone_code) %}
+	{% set message_key = name | replace({'[': '.', ']': ''}) %}
+  {% set invalid = message_key ~ ('.invalid') %}
+  {% set required = message_key ~ ('.required') %}
+	{% set input_type = 'text' %}
+	{% if name in ['password', 'customer[password]', 'customer[password2]'] %}
+		{% set input_type = 'password' %}
+	{% endif %}
+	{% if name in ['customer[email]', 'email'] %}
+		{% set input_type = 'email' %}
+	{% endif %}
+	{% if name in ['customer[phone]'] %}
+		{% set input_type = 'tel' %}
+	{% endif %}
+	{% if name in ['billing_address[number]'] %}
+		{% set input_type = 'number' %}
+	{% endif %}
+
+	{% set addressField = false %}
+	{% if ('billing_address' in name) or ('shipping_address' in name) %}
+		{% set addressField = true %}
+	{% endif %}
+
+	{% if type %}
+	<div class="smc-input {{ class }} {{ page.messages.error[invalid] or page.messages.error[required] ? 'smc-error' : '' }}">
+    <label class="smc-main-label">{{ label | t }}{{ (type == 'optional') and type != 'true' ? (' <span class="smc-small">('~ ('Optional' | t) ~')</span>') | lower | raw : '' }}
+    {% if name == 'customer[phone]' %}
+    	<a href="javascript:;" data-popup="smc-info-popup-phone"><i class="bx bx-info-circle"></i></a>
+    {% elseif name == 'customer[email]' %}
+      <a href="javascript:;" data-popup="smc-info-popup-email"><i class="bx bx-info-circle"></i></a>
+    {% elseif name == 'customer[createaccount]' %}
+      <a href="javascript:;" data-popup="smc-info-popup-create"><i class="bx bx-info-circle"></i></a>
+    {% endif %}
+    </label>
+    {% if name == 'customer[phone]' %}
+    <div class="smc-info-popup smc-info-popup-phone">
+      <div class="smc-info-popup-inner">
+        <div class="title">{{ 'Telefoonnummer' | t }}</div>
+        <div class="text">{{ 'Telefoonnummer info' | t }}</div>
+        <a class="close-btn" href="javascript:;"><i class="fa fa-times"></i></a>
+      </div>
+    </div>
+    {% elseif name == 'customer[email]' %}
+    <div class="smc-info-popup smc-info-popup-email">
+      <div class="smc-info-popup-inner">
+        <div class="title">{{ 'E-mail adres' | t }}</div>
+        <div class="text">{{ 'Email info' | t }}</div>
+        <a class="close-btn" href="javascript:;"><i class="fa fa-times"></i></a>
+      </div>
+    </div>
+    {% elseif name == 'customer[createaccount]' %}
+    <div class="smc-info-popup smc-info-popup-create">
+      <div class="smc-info-popup-inner">
+        <div class="title">{{ label | t }}</div>
+        <div class="text">{{ 'Email info' | t }}</div>
+        <a class="close-btn" href="javascript:;"><i class="fa fa-times"></i></a>
+      </div>
+    </div>
+    {% endif %}
+    <div class="smc-input-wrap">
+      {% if name == 'customer[phone]' %}
+      <div class="smc-country-select">
+        <div class="smc-cur-country"></div>
+        <select name="customer[phone_number_code]" tabindex="-1">
+          {% for name, country in shop.country_codes %}
+          {% set c_val = country.countryCode~'|'~country.code %}
+           <option value="{{ c_val }}" data-country="{{ country.countryCode | lower }}" data-country-code="+{{ country.code }}" {{ country.countryCode == (cur_phone_code | upper) or c_val == (cur_phone_code | upper) ? 'selected' : '' }}>{{ name  }} (+{{ country.code }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endif %}
+    	<input type="{{ input_type }}" name="{{ name }}" placeholder="{{ label | t }}" class="{{ type }}" value="{{ value }}" {{ name == 'billing_address[address]' ? 'data-smc-address-search="billing_address"' : '' }} {{ addressField ? 'autocomplete="off"' : '' }}>
+      {% if name == 'billing_address[address]' %}
+      <div class="smc-space-between-top" data-smc-address-result="billing_address">
+      </div>
+      {% endif %}
+    </div>
+    {% if page.messages.error[invalid] or page.messages.error[required] %}
+    	<div class="smc-error-message">
+        {% if page.messages.error[invalid] %}
+        {{ page.messages.error[invalid] }}
+        {% else %}
+        {{ page.messages.error[required] }}
+        {% endif %}
+    	</div>
+    {% endif %}
+	</div>
+	{% endif %}
+	
+{% endmacro input_group %}
+
+{% macro select_group(label, name, options, value, type, class) %}
+	{% set message_key = name | replace({'[': '.', ']': ''}) %}
+  {% set invalid = message_key ~ ('.invalid') %}
+  {% set required = message_key ~ ('.required') %}
+
+	{% if type %}
+	<div class="smc-input {{ class }} {{ page.messages.error[invalid] or page.messages.error[required] ? 'smc-error' : '' }}">
+    <label class="smc-main-label">{{ label | t }}{{ (type == 'optional') and type != 'true' ? (' <span class="smc-small">('~ ('Optional' | t) ~')</span>') | lower | raw : '' }}</label>
+    <div class="smc-select">
+      <select name="{{ name }}" class="{{ type }}">
+        {% for option in options %}
+        <option value="{{ option.value }}" {% if option.id %}data-id="{{ option.id }}"{% endif %} {{ value == option.value ? 'selected' : '' }} {{ not option.value ? 'disabled' : '' }}>{{ option.title | t }}</option>
+        {% endfor %}
+      </select>
+      <div class="smc-handle"></div>
+    </div>
+     {% if page.messages.error[invalid] or page.messages.error[required] %}
+    	<div class="smc-error-message">
+        {% if page.messages.error[invalid] %}
+        {{ page.messages.error[invalid] }}
+        {% else %}
+        {{ page.messages.error[required] }}
+        {% endif %}
+    	</div>
+    {% endif %}
+	</div>
+	{% endif %}
+{% endmacro select_group %}
+
+{% macro radio_group(label, name, options, value, type, class) %}
+	{% if type %}
+	<div class="smc-input {{ class }}">
+    <label class="smc-main-label">{{ label | t }}{{ (type == 'optional') and type != 'true' ? (' <span class="smc-small">('~ ('Optional' | t) ~')</span>') | lower | raw : '' }}</label>
+    <div class="smc-radios smc-flex">
+    	{% for option in options %}
+      <div class="smc-radio">
+        <input id="smc_{{ name }}_{{ option.value }}" type="radio" name="{{ name }}" value="{{ option.value }}" {{ value == option.value ? 'checked' : '' }}>
+        <label for="smc_{{ name }}_{{ option.value }}"><span class="fake-radio"></span>{{ option.title | t }}</label>
+      </div>
+      {% endfor %}
+    </div>
+	</div>
+	{% endif %}
+{% endmacro radio_group %}
+
+{% macro checkbox_group(label, name, options, value, type, class) %}
+	{% if type %}
+	<div class="smc-input {{ class }}">
+    {% if label %}
+    <label class="smc-main-label">{{ label | t }}{{ (type == 'optional') and type != 'true' ? (' <span class="smc-small">('~ ('Optional' | t) ~')</span>') | lower | raw : '' }}
+    {% if name == 'customer[createaccount]' %}
+      <a href="javascript:;" data-popup="smc-info-popup-create"><i class="bx bx-info-circle"></i></a>
+    {% endif %}
+    </label>
+    {% endif %}
+    
+    {% if name == 'customer[createaccount]' %}
+    <div class="smc-info-popup smc-info-popup-create">
+      <div class="smc-info-popup-inner">
+        <div class="title">{{ label | t }}</div>
+        <div class="text">{{ 'create info' | t }}</div>
+        <ul>
+          <li><i class="bx bx-check"></i>{{ 'create 1' | t }}</li>
+          <li><i class="bx bx-check"></i>{{ 'create 2' | t }}</li>
+          <li><i class="bx bx-check"></i>{{ 'create 3' | t }}</li>
+          <li><i class="bx bx-check"></i>{{ 'create 4' | t }}</li>
+        </ul>
+        <a class="close-btn" href="javascript:;"><i class="fa fa-times"></i></a>
+      </div>
+    </div>
+    {% endif %}
+  	
+    <div class="smc-checkboxes smc-flex">
+    	{% for option in options %}
+      <div class="smc-checkbox">
+        <input id="smc_{{ name }}_{{ option.value }}" type="checkbox" name="{{ name }}" value="{{ option.value }}" {{ value == option.value ? 'checked' : '' }}>
+        <label for="smc_{{ name }}_{{ option.value }}"><span class="fake-checkbox"></span><span>{{ option.title | t | raw }}</span></label>
+      </div>
+      {% endfor %}
+    </div>
+	</div>
+	{% endif %}
+{% endmacro checkbox_group %}
+
+{% macro textarea_group(page, label, name, value, type, class) %}
+	{% set message_key = name | replace({'[': '.', ']': ''}) %}
+  {% set invalid = message_key ~ ('.invalid') %}
+  {% set required = message_key ~ ('.required') %}
+	{% if type %}
+	<div class="smc-input {{ class }} {{ page.messages.error[invalid] or page.messages.error[required] ? 'smc-error' : '' }}">
+    <label class="smc-main-label">{{ label | t }}{{ (type == 'optional') and type != 'true' ? (' <span class="smc-small">('~ ('Optional' | t) ~')</small>') | lower | raw : '' }}</label>
+    <textarea type="{{ input_type }}" name="{{ name }}" placeholder="{{ label | t }}" class="{{ type }}" value="{{ value }}"></textarea>
+    {% if page.messages.error[invalid] or page.messages.error[required] %}
+    	<div class="smc-error-message">
+        {% if page.messages.error[invalid] %}
+        {{ page.messages.error[invalid] }}
+        {% else %}
+        {{ page.messages.error[required] }}
+        {% endif %}
+    	</div>
+    {% endif %}
+	</div>
+	{% endif %}
+	
+{% endmacro textarea_group %}
+
+{% macro page_title(title, subtitle, icon) %}
+<div class="smc-page-title">
+  <div class="smc-title">{{ icon ? ('<i class="'~icon~'"></i>') | raw : '' }}{{ title }}</div>
+  {% if subtitle %}
+  	<div class="smc-subtitle">{{ subtitle | raw }}</div>
+  {% endif %}
+</div>
+{% endmacro page_title %}
+
+{% macro small_title(title, subtitle) %}
+<div class="smc-small-title">
+  <div class="smc-title">{{ title }}</div>
+  {% if subtitle %}
+  	<div class="smc-subtitle">{{ subtitle }}</div>
+  {% endif %}
+</div>
+{% endmacro small_title %}
+
+{% macro small_title_nm(title, subtitle) %}
+<div class="smc-small-title no-margin">
+  <div class="smc-title">{{ title }}</div>
+  {% if subtitle %}
+  	<div class="smc-subtitle">{{ subtitle }}</div>
+  {% endif %}
+</div>
+{% endmacro small_title_nm %}
+
+{% macro messages(page) %}
+{% if page.messages.error %}
+<div class="smc-main-error">
+	{% for type, message in page.messages.error %}
+  {% if message == 'Could not set payment method (bank is een verplicht veld., De bank die u heeft gekozen is niet beschikbaar. Kies uit één van de beschikbare waardes.)' %}
+  <div>{{ 'payment-error-message' | t }}</div>
+  {% else %}
+  <div>{{ message }}</div>
+  {% endif %}
+  {% endfor %}
+</div>
+{% endif %}
+{% endmacro messages %}

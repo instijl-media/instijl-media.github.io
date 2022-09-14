@@ -1,0 +1,70 @@
+{% import 'snippets/sm-checkout-macros.rain' as sm %}
+{{ sm.messages(page) }}
+
+{{ sm.page_title(('Overzicht' | t), false, 'bx bx-list-ul') }}
+
+<a class="smc-btn hidden-sm hidden-md hidden-lg smc-xs-order-1" href="javascript:;" onclick="$('#smc-checkout-final-form').submit()">{{ 'Betaal met $1' | t(checkout.payment_method.title | split('-')[1] | trim) }}</a>
+<div class="smc-spacer smc-xs-order-1"></div>
+
+<div class="smc-review smc-xs-flex-wrap">
+	<div class="smc-flex-grow smc-xs-order-2">
+    <form action="{{ 'checkout/default/index' | url }}" method="post" id="smc-checkout-final-form">
+    
+    
+    
+    <div>
+      <strong>{{ 'Ship to this address' | t }}</strong>
+      <div>{{ checkout.shipping_address.company }}</div>
+      <div>{{ checkout.shipping_address.name }}</div>
+      <div>{{ checkout.shipping_address.address1 }} {{ checkout.shipping_address.number }}{{ checkout.shipping_address.extension }}</div>
+      <div>{{ checkout.shipping_address.zipcode }}, {{ checkout.shipping_address.city }}</div>
+      <a class="smc-text-link icon-right" href="{{ 'checkout/default/details' | url }}?from=review">{{ 'Change $1' | t('Details'|t|lower) }}<i class='bx bx-chevron-right'></i></a>
+    </div>
+
+    <div class="smc-spacer"></div>
+    <div>
+      <strong>{{ 'Shipping method' | t }}</strong>
+      <div>{{ checkout.shipment_method.title | t }}</div>
+      <a class="smc-text-link icon-right" href="{{ 'checkout/default/shipment' | url }}?from=review">{{ 'Change $1' | t('Shipping method'|t|lower) }}<i class='bx bx-chevron-right'></i></a>
+    </div>
+
+    <div class="smc-spacer"></div>
+    <div>
+      <strong>{{ 'Payment method' | t }}</strong>
+      <div>{{ checkout.payment_method.title | t }}</div>
+      <a class="smc-text-link icon-right" href="{{ 'checkout/default/payment' | url }}?from=review">{{ 'Change $1' | t('Payment method'|t|lower) }}<i class='bx bx-chevron-right'></i></a>
+    </div>
+
+      {#<div class="smc-spacer"></div>
+      <div class="smc-inputs">
+        {{ sm.textarea_group(page, 'Remark', 'comment', checkout.comment, 'optional', 'smc-wrap') }}
+      </div>#}
+
+      {% set terms_link = ('<a class="smc-text-link" href="' ~ ('service/general-terms-conditions' | url) ~ '" target="_blank">'~ ('General terms & conditions' | t | lower) ~'</a>')  %}
+
+      <div class="smc-spacer"></div>
+      <div class="smc-inputs">
+        {{ sm.checkbox_group('', 'newsletter', [{'value': '1', 'title': 'Subscribe to our newsletter'}], checkout.newsletter, 'optional', 'smc-wrap hidden') }}
+        {% if shop.settings.checkout.terms == 'show_checkbox' %}
+        {{ sm.checkbox_group('', 'terms', [{'value': '1', 'title': ('By clicking "buy" I place an order with an obligation to pay and I accept the $1.' | t(terms_link))}], checkout.terms, 'optional', 'smc-wrap terms-wrap') }}
+        {% endif %}
+      </div>
+      
+      {% if shop.settings.checkout.terms == 'message_only' %}
+      <div class="smc-space-between-bottom smc-space-between-top smc-auto-accept-terms">
+     		{{ 'By clicking "buy" I place an order with an obligation to pay and I accept the $1.' | t(terms_link) | raw }}
+        <input type="hidden" name="terms" value="1">
+      </div>
+      {% endif %}
+
+      <div class="smc-spacer"></div>
+      <a class="smc-btn" href="javascript:;" onclick="$(this).closest('form').submit()">{{ 'Betaal met $1' | t(checkout.payment_method.title | split('-')[1] | trim) }}</a>
+      
+      
+      
+    </form>
+  </div>
+    
+  {% include 'snippets/sm-checkout-products.rain' %}
+    
+</div>

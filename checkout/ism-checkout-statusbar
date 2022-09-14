@@ -1,0 +1,77 @@
+{% if request.get.dev %}
+{% set stepActive = {'method':0, 'details':1, 'shipment':2, 'payment':3, 'review':4} %}
+
+<div class="smc-progress-bar progress-{% if step == 'method' %}0{% elseif not checkout.billing_address.name %}1{% elseif checkout.progress.active < 4 %}{{ stepActive[step] }}{% else %}{{ checkout.progress.active }}{% endif %} {% if not smc_settings.showMethodPage %}no-method{% endif %}">
+    <ul>
+      {% if smc_settings.showMethodPage %}
+      <li class="smc-step {% if step == 'method' %}active{% else %}done{% endif %}">
+        <a href="{{ 'checkout/default' | url }}">
+          <div class="smc-step-circle"></div>
+          <div class="smc-step-title">{{ 'Login' | t }}</div>
+        </a>
+      </li>
+      {% endif %}
+      <li class="smc-step {% if step == 'details' %}active{% endif %} {% if (checkout.progress.active > 1 and checkout.billing_address.name) or pay %}done{% endif %}">
+        <a href="{{ 'checkout/default/details' | url }}">
+          <div class="smc-step-circle"></div>
+          <div class="smc-step-title">{{ 'Details' | t }}</div>
+        </a>
+      </li>
+      <li class="smc-step {% if step == 'shipment' %}active{% endif %} {% if (checkout.progress.active > 3 and checkout.billing_address.name) or step == 'shipment' or step == 'payment' or pay %}done{% endif %}">
+        {% if (checkout.shipment_method and checkout.billing_address.name) or pay %}<a href="{{ 'checkout/default/shipment' | url }}">{% endif %}
+          <div class="smc-step-circle"></div>
+          <div class="smc-step-title">{{ 'Delivery' | t }}</div>
+          {% if (checkout.shipment_method and checkout.billing_address.name) or pay %}</a>{% endif %}
+      </li>
+      <li class="smc-step {% if step == 'payment' %}active{% endif %} {% if checkout.progress.active > 3 or pay %}done{% endif %}">
+        {% if checkout.payment_method or pay %}<a href="{{ 'checkout/default/payment' | url }}">{% endif %}
+          <div class="smc-step-circle"></div>
+          <div class="smc-step-title">{{ 'Payment' | t }}</div>
+          {% if checkout.payment_method or pay %}</a>{% endif %}
+      </li>
+      <li class="smc-step {% if step == 'review' %}active{% endif %} {% if pay %}done{% endif %}">
+        {% if pay %}<a href="{{ 'checkout/default/review' | url }}">{% endif %}
+          <div class="smc-step-circle"></div>
+          <div class="smc-step-title">{{ 'Overview' | t }}</div>
+          {% if pay %}</a>{% endif %}
+      </li>
+    </ul>
+</div>
+{% else %}
+<div class="smc-progress-bar progress-{% if step == 'method' %}0{% else %}{{ checkout.progress.active }}{% endif %} {% if not smc_settings.showMethodPage %}no-method{% endif %}">
+    <ul>
+      {% if smc_settings.showMethodPage %}
+      <li class="smc-step {% if step == 'method' %}active{% else %}done{% endif %}">
+        <a href="{{ 'checkout/default' | url }}">
+          <div class="smc-step-circle"></div>
+          <div class="smc-step-title">{{ 'Login' | t }}</div>
+        </a>
+      </li>
+      {% endif %}
+      <li class="smc-step {% if step == 'details' %}active{% endif %} {% if checkout.progress.active > 1 or pay %}done{% endif %}">
+        <a href="{{ 'checkout/default/details' | url }}">
+          <div class="smc-step-circle"></div>
+          <div class="smc-step-title">{{ 'Details' | t }}</div>
+        </a>
+      </li>
+      <li class="smc-step {% if step == 'shipment' %}active{% endif %} {% if checkout.progress.active > 2 or pay %}done{% endif %}">
+        {% if checkout.shipment_method or pay %}<a href="{{ 'checkout/default/shipment' | url }}">{% endif %}
+          <div class="smc-step-circle"></div>
+          <div class="smc-step-title">{{ 'Delivery' | t }}</div>
+          {% if checkout.shipment_method or pay %}</a>{% endif %}
+      </li>
+      <li class="smc-step {% if step == 'payment' %}active{% endif %} {% if checkout.progress.active > 3 or pay %}done{% endif %}">
+        {% if checkout.payment_method or pay %}<a href="{{ 'checkout/default/payment' | url }}">{% endif %}
+          <div class="smc-step-circle"></div>
+          <div class="smc-step-title">{{ 'Payment' | t }}</div>
+          {% if checkout.payment_method or pay %}</a>{% endif %}
+      </li>
+      <li class="smc-step {% if step == 'review' %}active{% endif %} {% if pay %}done{% endif %}">
+        {% if pay %}<a href="{{ 'checkout/default/review' | url }}">{% endif %}
+          <div class="smc-step-circle"></div>
+          <div class="smc-step-title">{{ 'Overview' | t }}</div>
+          {% if pay %}</a>{% endif %}
+      </li>
+    </ul>
+</div>
+{% endif %}

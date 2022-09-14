@@ -1,0 +1,66 @@
+{% import 'snippets/sm-checkout-macros.rain' as sm %}
+{{ sm.messages(page) }}
+
+{{ sm.page_title(('Delivery or pickup' | t), false, 'bx bxs-truck') }}
+
+{% set from = ('checkout/default/'~request.get.from) | url %}
+
+<div class="smc-flex smc-align-start smc-xs-flex-wrap">
+  <div class="smc-flex-grow smc-xs-order-2">
+    <form action="{{ 'checkout/default/shipment?format=json' | url }}" method="post" data-next="{{ (request.get.from ? 'checkout/default/'~request.get.from : 'checkout/default/payment') | url }}">
+    <div class="smc-radios-big">
+      {% set methodCount = 0 %}
+    {% for shipment in checkout.shipment_methods.data %}
+      {% set methodCount = methodCount + 1 %}
+      <div class="smc-radio-big">
+        <input id="smc-input-{{ shipment.id }}" class="gui-left" type="radio" name="shipment_method" value="{{ shipment.id }}" {{ checkout.shipment_method.id == shipment.id or (methodCount == 1 and not checkout.shipment_method.id) ? 'checked' : '' }} data-price="{{ shipment.price_incl }}">
+        <label for="smc-input-{{ shipment.id }}">
+          <div class="smc-radio-label-wrap">
+            <span class="fake-radio"></span>
+            <div class="smc-radio-info">
+              <div class="smc-flex-between">
+                <div class="smc-radio-title">{{ shipment.title == 'DHL' ? ('Delivery' | t) : shipment.title }}</div>
+                <div class="smc-radio-price {{ shipment.price_incl > 0 ? '' : 'free' }}">
+                  {% if smc_settings.showCurrency %}
+                    {{ shipment.price_incl > 0 ? (shipment.price_incl | money) : ('Free' | t) }}
+                  {% else %}
+                    {{ shipment.price_incl > 0 ? '+'~(shipment.price_incl | money_without_currency) : ('Free' | t) }}
+                  {% endif %}
+                </div>
+              </div>
+              {% if shipment.description %}
+              <div class="smc-radio-description">{{ shipment.description }}</div>
+              {% endif %}
+              {% if shipment.is_form or shipment.options %}
+              <div class="smc-radio-content">
+                <div class="smc-inputs">
+                  {% for key, option in shipment.options %}
+                  {% set values = [] %}
+                  {% for key,value in option.values %}
+                    {% set values = values | merge([{'value': key, 'title': value}]) %}
+                  {% endfor %}
+                  {% set name = (shipment.id~'['~ key ~']') %}
+                  {{ sm.select_group(option.label, name, values, checkout.shipment_method.data[key], 'required', 'smc-wrap') }}
+                  {% endfor %}
+                </div>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </label>
+      </div>
+    {% endfor %}
+    </div>
+
+    <div class="smc-spacer"></div>
+    <div class="smc-flex smc-align-center smc-flex-end">
+      <a class="smc-text-link icon-right smc-mr-small" href="{{ 'checkout/default/details' | url }}"><i class='bx bx-chevron-left'></i>{{ 'Previous step' | t() }}</a>
+      <a class="smc-btn" href="javascript:;" onclick="$(this).closest('form').submit()">
+        <span class="smc-xs-hidden">{{ request.get.from ? ('Continue' | t) : 'Continue to $1' | t(('Payment method' | t | lower)) }}</span>
+        <span class="smc-xs-visible">{{ 'Continue' | t }}</span>
+      </a>
+    </div>
+  </form>
+  </div>
+  {% include 'snippets/sm-checkout-products.rain' %}
+</div>

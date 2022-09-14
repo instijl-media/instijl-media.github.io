@@ -1,0 +1,180 @@
+{% import 'snippets/sm-checkout-macros.rain' as sm %}
+
+{% set customer_settings = shop.settings.customer %}
+{% set customer_type_options = [{'value': 'private', 'title': 'Private'}, {'value': 'company', 'title': 'Business'}] %}
+{% set gender_options = [{'value': 'male', 'title': 'Male'}, {'value': 'female', 'title': 'Female'}] %}
+{% set customer_birthdate = checkout.customer.birthdate | split('-') %}
+{% set countries = {} %}
+{% for country in checkout.form.countries %}
+	{% set countries = countries | merge([{'value': country.code, 'title': country.title, 'id': country.id}]) %}
+{% endfor  %}
+
+{% set subtitle = not page.account ? 'Al klant? <a data-smc-show-login>Log in</a> om snel te bestellen.' : false %}
+
+{{ sm.page_title(('Your details' | t), subtitle, 'bx bx-user') }}
+{{ sm.messages(page) }}
+
+<div class="smc-flex smc-align-start  smc-xs-flex-wrap">
+  <div class="smc-flex-grow smc-xs-order-2">
+    
+    <div class="smc-inputs smc-hidden" data-smc-login-wrap>
+    	<div class="smc-input smc-wrap">
+        <div class="smc-block-padding-small smc-bg-gray">
+        <form id="gui-form-login" action="{{ 'account/loginPost/?return=checkout' | url }}" method="post" >
+          <input type="hidden" name="key" value="{{ page.key }}">
+
+          {{ sm.small_title(('Registered customers' | t), ('If you have an account with us, please log in.' | t)) }}
+          <div class="smc-inputs smc-wrap">
+            {{ sm.input_group(page, shop, 'E-mail', 'email', '', 'required', 'smc-wrap') }}
+            {{ sm.input_group(page, shop, 'Password', 'password', '', 'required', 'smc-wrap') }}
+            <div class="smc-input text-right smc-wrap">
+              <a class="smc-text-link" href="{{ 'account/password' | url }}">{{ 'Forgot your password?' | t }}</a>
+            </div>
+            <div class="smc-input">
+              <a class="smc-btn" href="javascript:;" onclick="$(this).closest('form').submit();">{{ 'Login' | t }}</a>
+            </div>
+          </div>
+
+        </form>
+        </div>
+      </div>
+    </div>
+    
+    <form class="form-details" action="{{ 'checkout/default/details?format=json' | url }}" method="post" data-next="{{ (request.get.from ? 'checkout/default/'~request.get.from : 'checkout/default/shipment') | url }}">
+
+      <div class="smc-inputs">
+      {{ sm.radio_group('Customer type', 'customer[type]', customer_type_options, checkout.customer.type, customer_settings.company.mode, 'smc-wrap') }}
+
+
+      <div data-smc-company-wrap class="smc-input smc-wrap smc-hidden">
+        <div class="smc-block-padding-small smc-bg-gray">
+        <div class="smc-inputs">
+          {{ sm.input_group(page, shop, 'Company name', 'customer[company]', checkout.customer.company, 'required', 'smc-wrap') }}
+          <div class="smc-flex smc-xs-flex-wrap">
+          {{ sm.input_group(page, shop, 'CoC number', 'customer[cocnumber]', checkout.customer.cocnumber, customer_settings.company.coc, '') }}
+          {{ sm.input_group(page, shop, 'VAT number', 'customer[vatnumber]', checkout.customer.vatnumber, customer_settings.company.vat, '') }}
+          </div>
+        </div>
+        </div>
+      </div>
+
+      {{ sm.radio_group('Gender', 'customer[gender]', gender_options, checkout.customer.gender, customer_settings.gender, '') }}
+
+      <div class="smc-flex smc-xs-flex-wrap">
+        {{ sm.input_group(page, shop, 'Firstname', 'customer[firstname]', checkout.customer.firstname, 'required', '') }}
+        {{ sm.input_group(page, shop, 'Middlename', 'customer[middlename]', checkout.customer.middlename, customer_settings.middlename, 'smc-max-200') }}
+        {{ sm.input_group(page, shop, 'Lastname', 'customer[lastname]', checkout.customer.lastname, 'required', '') }}
+      </div>
+      {{ sm.input_group(page, shop, 'E-mail address', 'customer[email]', checkout.customer.email, 'required', 'smc-wrap') }}
+        
+      {{ sm.checkbox_group('', 'newsletter-fake', [{'value': '1', 'title': 'Subscribe to our newsletter'}], checkout.newsletter, 'optional', 'smc-wrap') }}
+        
+      <div class="smc-flex smc-xs-flex-wrap">
+        {{ sm.input_group(page, shop, 'Phonenumber', 'customer[phone]', checkout.customer.phone, customer_settings.phone, '', (checkout.customer.phone_number_code ? checkout.customer.phone_number_code : request.country)) }}
+        {{ sm.input_group(page, shop, 'Mobile', 'customer[mobile]', checkout.customer.mobile, customer_settings.mobile, '') }}
+      </div>
+      <div class="smc-flex smc-xs-flex-wrap">
+        {{ sm.select_group('Day', 'customer[birthdate][d]', checkout.form.days, customer_birthdate[2], customer_settings.birthdate, '') }}
+        {{ sm.select_group('Month', 'customer[birthdate][m]', checkout.form.months, customer_birthdate[1], customer_settings.birthdate, '') }}
+        {{ sm.select_group('Year', 'customer[birthdate][y]', checkout.form.years, customer_birthdate[0], customer_settings.birthdate, '') }}
+      </div>
+      {{ sm.input_group(page, shop, 'National identification number', 'customer[national_id]', checkout.customer.national_id, customer_settings.national_id, '') }}
+        
+        {% if not page.account and request.get.dev %}
+        {{ sm.checkbox_group('Create account', 'customer[createaccount]', [{'value': '1', 'title': 'Create an account'}], (checkout.mode == 'guest' ? '0' : '1'), 'optional', '') }}
+        <div data-smc-createaccount-wrap class="smc-input smc-wrap smc-hidden">
+          <div class="smc-block-padding-small smc-bg-gray">
+            <div class="smc-inputs">
+              <div class="smc-flex smc-xs-flex-wrap">
+                {{ sm.input_group(page, shop, 'Password', 'customer[password]', checkout.customer.password, 'required', '') }}
+                {{ sm.input_group(page, shop, 'Confirm password', 'customer[password2]', checkout.customer.password2, 'required', '') }}
+                </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+      <div class="smc-spacer"></div>
+
+      <div class="smc-input">
+        {{ sm.small_title_nm(('Billing address' | t), false) }}
+      </div>
+
+      {% set street_label = ('Streetname' | t)~' + '~ ('Number' | t) %}
+
+      {% if addressAutoFill %}
+        {{ sm.input_group(page, shop, street_label, 'billing_address[address]', ((checkout.billing_address.address1~' '~checkout.billing_address.number) | trim), 'required', '') }}
+      {% endif %}
+
+      <div class="smc-flex smc-xs-flex-wrap">
+        {{ sm.input_group(page, shop, 'Zipcode', 'billing_address[zipcode]', checkout.billing_address.zipcode, 'required', '') }}
+        {{ sm.input_group(page, shop, 'Number', 'billing_address[number]', checkout.billing_address.number, 'required', 'smc-max-150') }}
+        {{ sm.input_group(page, shop, 'Extension', 'billing_address[extension]', checkout.billing_address.extension, 'optional', 'smc-max-120 hide-optional') }}
+      </div>
+      <div class="smc-flex smc-xs-flex-wrap">
+        {{ sm.input_group(page, shop, 'Streetname', 'billing_address[address1]', checkout.billing_address.address1, 'required', (addressAutoFill ? 'smc-hidden' : '')) }}
+        {{ sm.input_group(page, shop, 'City', 'billing_address[city]', checkout.billing_address.city, 'required', '') }}
+        
+      </div>
+      <div class="smc-flex smc-xs-flex-wrap">
+        {{ sm.select_group('Country', 'billing_address[country]', countries, checkout.billing_address.country, 'required', '') }}
+      </div>
+
+        {{ sm.checkbox_group('Shipping address', 'customer[sameaddress]', [{'value': '1', 'title': 'Same as billing address'}], checkout.customer.sameaddress, 'optional', '') }}
+
+        <div data-smc-shipping-wrap class="smc-input smc-wrap smc-hidden">
+        <div class="smc-block-padding-small smc-bg-gray">
+          <div class="smc-inputs">
+          {{ sm.input_group(page, shop, 'Name', 'shipping_address[name]', checkout.shipping_address.name, 'required', '') }}
+          {{ sm.input_group(page, shop, 'Company', 'shipping_address[company]', checkout.shipping_address.company, 'optional', '') }}
+          <div class="smc-flex smc-xs-flex-wrap">
+            {{ sm.input_group(page, shop, 'Zipcode', 'shipping_address[zipcode]', checkout.shipping_address.zipcode, 'required', '') }}
+            {{ sm.input_group(page, shop, 'Number', 'shipping_address[number]', checkout.shipping_address.number, 'required', 'smc-max-150') }}
+            {{ sm.input_group(page, shop, 'Extension', 'shipping_address[extension]', checkout.shipping_address.extension, 'optional', 'smc-max-120') }}
+          </div>
+          <div class="smc-flex smc-xs-flex-wrap">
+            {{ sm.input_group(page, shop, 'Streetname', 'shipping_address[address1]', checkout.shipping_address.address1, 'required', '') }}
+            {{ sm.input_group(page, shop, 'City', 'shipping_address[city]', checkout.shipping_address.city, 'required', '') }}
+          </div>
+            <div class="smc-flex smc-xs-flex-wrap">
+              {{ sm.select_group('Country', 'shipping_address[country]', countries, checkout.shipping_address.country, 'required', '') }}
+            </div>
+          </div>
+        </div>
+        </div>
+
+        {#{{ sm.radio_group('Gender', 'customer[gender]', gender_options, checkout.customer.gender, customer_settings.gender, '') }}#}
+        {#
+        <div data-smc-password-wrap class="smc-input smc-wrap smc-hidde}">
+          <div class="smc-block-padding-small smc-bg-gray">
+          <div class="smc-inputs">
+            <div class="smc-flex smc-xs-flex-wrap">
+            {{ sm.input_group(page, shop, 'Password', 'customer[password]', '', 'optional', '') }}
+            {{ sm.input_group(page, shop, 'Confirm password', 'customer[password1]', '', 'optional', '') }}
+            </div>
+          </div>
+          </div>
+        </div>
+        #}
+
+
+      </div>
+
+      <div class="smc-spacer"></div>
+
+      <a class="smc-btn" href="javascript:;" onclick="$('.sm-checkout form:not(#gui-form-login)').submit()">
+        <span class="smc-xs-hidden">{{ request.get.from ? ('Continue' | t) : 'Continue to $1' | t(('Shipping method' | t | lower)) }}</span>
+        <span class="smc-xs-visible">{{ 'Continue' | t }}</span>
+      </a>
+
+    </form>
+  </div>
+  {% include 'snippets/sm-checkout-products.rain' %}
+</div>
+{#
+
+TO DO
+- Telefoonnummer land
+- Region
+- Betaal iconen
+#}
