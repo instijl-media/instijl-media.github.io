@@ -1,5 +1,17 @@
 {
   "id": "0",
+  "shopid": "999",
+  "url": "",
+  "key": "instijl",
+  "plugins": [
+    {
+      "title":"ism_products_connector",
+      "src":"https://instijl-media.github.io/product-connector/main.js"
+    }
+  ]
+},
+{
+  "id": "1",
   "shopid": "278738",
   "url": "https://test-instijl8.webshopapp.com",
   "key": "56917d58-b0dc-4076-ab05-8e077efbcb59",
