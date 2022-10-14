@@ -1,0 +1,88 @@
+{# snippets/ism-custom-product-form.rain #}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<div id="product-form" class="section-form">
+  <div class="your_container_class">
+    <div class="products">
+        {% for bundle in product.bundles %}
+        {% for product in bundle.products %}
+        <div class="product product-json row align-items-center">
+            <a href="{{ product.url | url }}"></a><div class="product-image">
+            <img src="{{ product.image | url_image(('80x80'~'x1'), product.fulltitle) }}"/>
+          </div>
+        <div class="col-lg-8">
+          <div class="product-inner">
+            <div class="product-title">
+              <span>{{ product.title }}</span>
+            </div>
+            <div class="product-stock">
+              {% if product.stock.level > 0  %}
+              {{ 'Beschikbare voorraad: ' }}<span class="amount">{{ product.stock.level }}</span>
+              {% else %}
+              <span class="out-of-stock">{{ 'Dit product is niet meer besckibaar'}}</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2">
+          <div class="product-quantity">
+            <a href="javascript:;" class="product-quantity-click" data-way="up"><span class="material-symbols-outlined">add</span></a>
+            <input type="number" name="quantity_product" value="{{ product.quantity }}" class="quantity"/>
+            <a href="javascript:;" class="product-quantity-click" data-way="down"><span class="material-symbols-outlined">remove</span></a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      {% endfor %}
+    </div>
+    <div class="title-box my-3">
+      <h3 class="font-headings h3">{{ 'Gegevens & afronden'}}</h3>
+    </div>
+    <div class="row">
+      <div class="single-field col-md-6">
+        <label for="gui-form-voornaam">{{ 'Voornaam'}}<span class="mandatory">*</span></label>
+        <div class="gui-input">
+          <input type="text" id="gui-form-voornaam" name="voornaam" class="gui-validate" required />
+        </div>
+      </div>
+      <div class="single-field col-md-6">
+        <label for="gui-form-achternaam">{{ 'Achternaam'}}<span class="mandatory">*</span></label>
+        <div class="gui-input">
+          <input type="text" id="gui-form-achternaam" name="achternaam" class="gui-validate" required />
+        </div>
+      </div>
+      <div class="single-field col-md-12">
+        <label for="gui-form-bedrijfsnaam">{{ 'Bedrijfsnaam'}}</label>
+        <div class="gui-input">
+          <input type="text" id="gui-form-bedrijfsnaam" name="bedrijfsnaam" class="gui-validate" />
+        </div>
+      </div>
+      <div class="single-field col-md-6">
+        <label for="gui-form-email">{{ 'Email'}}<span class="mandatory">*</span></label>
+        <div class="gui-input">
+          <input type="text" id="gui-form-email" name="email" class="gui-validate" required />
+        </div>
+      </div>
+      <div class="single-field col-md-6">
+        <label for="gui-form-telefoonnummer">{{ 'Telefoonnnummer'}}<span class="mandatory">*</span></label>
+        <div class="gui-input">
+          <input type="text" id="gui-form-telefoonnummer" name="telefoonnummer" class="gui-validate" required />
+        </div>
+      </div>
+            <div class="single-field col-md-6">
+        <label for="gui-form-omschrijving">{{ 'Opmerking'}}<span class="mandatory">*</span></label>
+        <div class="gui-input">
+          <textarea type="text" id="gui-form-omschrijving" class="gui-validate" name="omschrijving"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="feedback text-red">{{ 'Zorg dat alle bovenstaande gegevens zijn opgegeven !' | t }}</div>
+    <div class="test btn cta">{{ 'offerte aanvragen' | t }}</div>
+  </div>
+</div>
+<div class="thank-you">
+  <div class="container">
+    <h2>{{ 'Bedankt voor het aanvragen de offerte' | t }}</h2>
+    <a class="cta" href="{{ shop.domain }}" target="_blank" rel="noopener">{{ 'Terug naar de homepagina' | t }}</a>
+  </div>
+</div>

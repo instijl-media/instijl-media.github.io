@@ -1,0 +1,73 @@
+#product-form .test {
+  width: 25%;
+}
+#product-form {
+  padding-bottom: 2rem;
+}
+.thank-you {
+  padding-bottom: 2rem;
+}
+#product-form .feedback {
+  color: red;
+  font-weight: bold;
+}
+#product-form .submitbutton {
+  width: 25%;
+  padding-bottom: 10px;
+}
+#product-form .title-box {
+  border-bottom: 1px solid #dfdbdb;
+  padding-bottom: 2rem;
+  padding-top: 2rem;
+  margin-bottom: 1rem;
+}
+#product-form .products {
+  padding: 1rem;
+  background: #dedede;
+  border-radius: 20px;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+#product-form img {
+  width: auto;
+  height: auto;
+}
+#product-form .products .product {
+  align-items: center;
+  background: white;
+  padding: 17px;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+#product-form .products .product .product-title {
+  font-weight: bold;
+}
+#product-form .products .product .product-stock .amount {
+  font-weight: bold;
+}
+@media only screen and (max-width: 600px) {
+  .products .product {
+    justify-content: center;
+    text-align: center;
+  }
+}
+#product-form .product-quantity input {
+  border: none;
+  width: 8%;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+#product-form input::-webkit-outer-spin-button,
+#product-form input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+#product-form .quantity-icon img {
+  width: 10px;
+  height: 10px;
+}
+#product-form .product-quantity {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

@@ -1,0 +1,360 @@
+{# snippets/google-tagmanager.rain #}
+{% if template == 'pages/collection.rain' %}
+  {% set productList = collection.products %}
+  {% if page.search %}
+    {% set list = 'Search results' %}
+  {% else %}
+    {% set list = 'Category '~collection.title %}
+    {% set categoryList = collection.title %}
+  {% endif %}
+{% endif %}
+<script>
+  // View_item_event 
+  dataLayer = [];
+  {% if template == 'pages/collection.rain' %}
+  {% if productList %}
+  dataLayer.push({
+      event: "view_item_list",
+      ecommerce: {
+        items: [
+          {% for product in productList %}
+         {
+          item_id: "{{ product.id }}",
+          item_name: "{{ product.fulltitle }}",
+          affiliation: "{{ shop.title }}",
+          coupon: "",
+          currency: "{{ shop.currency2.code }}",
+          discount: "",
+          index: {{ loop.index0 }},
+          item_brand: "{{ product.brand.title }}",
+          item_category: "",
+          item_list_id: "",
+          item_list_name: "",
+          item_variant: "{{ product.variant }}",
+          location_id: "",
+          price: {{ (product.price.price | number_format(2)) | replace(',', '') }},
+          quantity: 1
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+        ]
+      }
+    });
+  {% endif %}
+  {% endif %}
+  // endof of view_item event
+  
+  // select_item event
+  function selectItem() {
+    dataLayer.push({
+      event: "select_item",
+      ecommerce: {
+        items: [
+          {
+            item_name: "{{ product.fulltitle }}",
+          item_id: "{{ product.id }}",
+          price: "{{ (product.price.price | number_format(2)) | replace(',', '') }}",
+          item_brand: "{{ product.brand.title }}",
+          {% for category in product.categories %}
+          item_category{% if not loop.first %}{{ loop.index }}{% endif %}: "{{ category.title }}",
+          {% endfor %}
+          item_variant: "{{ product.variant }}",
+          item_list_name: "",
+          item_list_id: "",
+          index: ""
+          }
+        ]
+      }
+    })
+  }
+  $(document).ready(function(){
+    $('.productborder').click(function(){
+      selectItem();
+    })
+  })
+  // endof select_item event
+   
+   
+  {% if template == 'pages/product.rain' %}
+    // view_item event
+    dataLayer.push({
+    event: "view_item",
+    ecommerce: {
+      items: [
+        {
+          item_name: "{{ product.fulltitle }}",
+          item_id: "{{ product.id }}",
+          price: "{{ (product.price.price | number_format(2)) | replace(',', '') }}",
+          item_brand: "{{ product.brand.title }}",
+          {% for category in product.categories %}
+          item_category{% if not loop.first %}{{ loop.index }}{% endif %}: "{{ category.title }}",
+          {% endfor %}
+          item_variant: "{{ product.variant }}",
+          item_list_name: "",
+          item_list_id: "",
+          index: "",
+          quantity: {{ product.quantity }}
+        }
+      ]
+    }
+  });
+  // endof view_item event
+      // add_to_cart event function
+    function GA_add_to_cart() {
+    var product_quantity = $('input[name="quantity"]').val();
+    dataLayer.push({
+      event: "add_to_cart",
+      ecommerce: {
+        items: [
+          {
+            item_id: "{{ product.id }}",
+            item_name: "{{ product.fulltitle }}",
+            affiliation: "{{ shop.title }}",
+            coupon: "",
+            currency: "{{ shop.currency2.code }}",
+            discount: "",
+            index: "",
+            item_brand: "{{ product.brand.title }}",
+            item_category: "",
+            item_list_id: "",
+            item_list_name: "",
+            item_variant: "{{ product.variant }}",
+            location_id: "",
+            price: {{ (product.price.price | number_format(2)) | replace(',', '') }},
+            quantity: product_quantity
+          }
+        ]
+      }
+    });
+  }
+  // endof add_to_cart event
+  {% endif %}
+  
+
+  {% if template == 'pages/cart.rain' %}
+  // Remove_from_cart event
+  function GA_remove_from_cart() {
+    var product_quantity = $('input[name="quantity"]').val();
+    dataLayer.push({
+      event: "remove_from_cart",
+      ecommerce: {
+        items: [
+          {
+            item_id: "{{ product.id }}",
+            item_name: "{{ product.fulltitle }}",
+            affiliation: "{{ shop.title }}",
+            coupon: "",
+            currency: "{{ shop.currency2.code }}",
+            discount: "",
+            index: "",
+            item_brand: "{{ product.brand.title }}",
+            item_category: "",
+            item_list_id: "",
+            item_list_name: "",
+            item_variant: "{{ product.variant }}",
+            location_id: "",
+            price: {{ (product.price.price | number_format(2)) | replace(',', '') }},
+            quantity: product_quantity
+          }
+        ]
+      }
+    });
+  }
+   // endof remove_cart event
+   
+   // view_cart event
+   dataLayer.push({
+      event: "view_cart",
+      ecommerce: {
+        currency: "{{ shop.currency2.code }}",
+        value: {{ cart.totals.grand_total }},
+        items: [
+        {% for product in cart.products %}
+        {
+          item_id: "{{ product.id }}",
+          item_name: "{{ product.fulltitle }}",
+          affiliation: "{{ shop.title }}",
+          coupon: "",
+          currency: "{{ shop.currency2.code }}",
+          discount: {{ product.discount.price_incl }},
+          index: {{ loop.index0 }},
+          item_brand: "{{ product.brand.title }}",
+          item_category: "",
+          item_list_id: "",
+          item_list_name: "",
+          item_variant: "{{ product.variant }}",
+          location_id: "",
+          price: {{ product.price.price_incl | replace(',', '') }},
+          quantity: {{ product.quantity }}
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+        ]
+      }
+    });
+    // endof view_cart event
+   {% endif %}
+   
+   
+   {% if checkout and step == 'method' %}
+   // begin_checkout event
+   dataLayer.push({
+     event: "begin_checkout",
+     ecommerce: {
+       items: [
+         {% for product in page.cart.products %}
+         {
+         item_id: "{{ product.id }}",
+         item_name: "{{ product.fulltitle }}",
+         affiliation: "{{ shop.title }}",
+         coupon: "",
+         currency: "{{ shop.currency2.code }}",
+         discount: "",
+         index: {{ loop.index0 }},
+         item_brand: "{{ product.brand.title }}",
+         item_category: "",
+         item_list_id: "",
+         item_list_name: "",
+         item_variant: "{{ product.variant }}",
+         location_id: "",
+         price: {{ product.price.price_incl | replace(',', '') }},
+         quantity: {{ product.quantity }}
+         }{% if not loop.last %},{% endif %}
+         {% endfor %}
+         ]
+         }
+       });
+      // endof begin-checkout event
+ {% endif %}
+ 
+ // add event on last step
+  {% if checkout and step == 'review' %}
+    dataLayer.push({
+    event: "add_payment_info",
+    ecommerce: {
+      currency: "{{ shop.currency2.code }}",
+      value: {{ checkout.quote.totals.grand_total | replace(',', '') }},
+      coupon: "{{ checkout.discount_code }}",
+      payment_type: "{{ checkout.payment_method.title }}",
+      items: [
+      {% for product in page.cart.products %}
+      {
+        item_id: "{{ product.id }}",
+        item_name: "{{ product.fulltitle }}",
+        affiliation: "{{ shop.title }}",
+        coupon: "",
+        currency: "{{ shop.currency2.code }}",
+        discount: "",
+        index: {{ loop.index0 }},
+        item_brand: "{{ product.brand.title }}",
+        item_category: "",
+        item_list_id: "",
+        item_list_name: "",
+        item_variant: "{{ product.variant }}",
+        location_id: "",
+        price: {{ product.price.price_incl | replace(',', '') }},
+        quantity: {{ product.quantity }}
+      }{% if not loop.last %},{% endif %}
+      {% endfor %}
+      ]
+    }
+  });
+  dataLayer.push({
+    event: "add_shipping_info",
+    ecommerce: {
+      currency: "{{ shop.currency2.code }}",
+      value: {{ checkout.quote.totals.grand_total | replace(',', '') }},
+      coupon: "{{ checkout.discount_code }}",
+      shipping_tier: "{{ checkout.shipment_method.title }}",
+      items: [
+      {% for product in page.cart.products %}
+      {
+        item_id: "{{ product.id }}",
+        item_name: "{{ product.fulltitle }}",
+        affiliation: "{{ shop.title }}",
+        coupon: "",
+        currency: "{{ shop.currency2.code }}",
+        discount: "",
+        index: {{ loop.index0 }},
+        item_brand: "{{ product.brand.title }}",
+        item_category: "",
+        item_list_id: "",
+        item_list_name: "",
+        item_variant: "{{ product.variant }}",
+        location_id: "",
+        price: {{ product.price.price_incl | replace(',', '') }},
+        quantity: {{ product.quantity }}
+      }{% if not loop.last %},{% endif %}
+      {% endfor %}
+      ]
+    }
+  });
+  {% endif %}
+  // endof add to event
+  
+  // purchase event
+   {% if template == 'pages/thankyou.rain' %}
+  dataLayer.push({
+    event: "purchase",
+    ecommerce: {
+        transaction_id: "{{ order.information.id }}",
+        affiliation: "{{ shop.name }}",
+        value: "{{ order.information.price_incl | replace(',', '') }}",
+        tax: "{{ order.information.price_tax | replace(',', '') }}",
+        shipping: "{{ order.informatiom.shipping_price | replace(',', '') }}",
+        currency: "{{ shop.currency | upper }}",
+        coupon: "{{ order.information.code }}",
+        items: [
+        {% for product in order.products %}
+          {
+            item_name: "{{ product.fulltitle }}",
+            item_id: "{{ product.product_id }}",
+            price: "{{ product.base_price_incl | replace(',', '') }}",
+            item_brand: "{{ product.brand.title }}",
+            item_category: "", // Not available
+            item_variant: "{{ product.variant }}",
+            quantity: {{ product.quantity }}
+          }{% if not loop.last %},{% endif %}
+  			{% endfor %}
+      	]
+    }
+  }); 
+  {% endif %}  
+  // endof purchase event
+  
+  // Select sale item event
+    function GA_select_promotion() {
+      var product_quantity = $('input[name="quantity"]').val();
+      dataLayer.push({
+        event: "remove_from_cart",
+        ecommerce: {
+          items: [
+            {
+              item_id: "{{ product.id }}",
+              item_name: "{{ product.fulltitle }}",
+              affiliation: "{{ shop.title }}",
+              coupon: "",
+              currency: "{{ shop.currency2.code }}",
+              discount: "",
+              index: "",
+              item_brand: "{{ product.brand.title }}",
+              item_category: "",
+              item_list_id: "",
+              item_list_name: "",
+              item_variant: "{{ product.variant }}",
+              location_id: "",
+              price: {{ (product.price.price | number_format(2)) | replace(',', '') }},
+              quantity: product_quantity
+            }
+        ]
+      }
+     });
+    }
+   // endof sale item event
+  console.log(dataLayer)
+</script>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-M5VFP4F');</script>
+<!-- End Google Tag Manager -->
